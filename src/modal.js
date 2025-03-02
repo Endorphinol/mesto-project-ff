@@ -1,34 +1,34 @@
-import { modalOpenButton, 
+import {
+    modalOpenButton,
     modalOpenButtonPlus,
     modalCloseButton,
-    modalCards,
     modalWindow,
-    modalOverlay
 } from './index';
 
 export function openModal(evt) {
-    if (openModal || evt.target.classList.contains('card__image')) {
+    if (evt.target === modalOpenButton || evt.target === modalOpenButtonPlus || evt.target.classList.contains('card__image')) {
         modalWindow.style.display = 'flex';
+        document.addEventListener('keydown', closeModalEsc);
     }
 };
 
 export function closeModal() {
     modalCloseButton.addEventListener('click', function () {
         modalWindow.style.display = 'none';
+        document.removeEventListener('keydown', closeModalEsc);
     })
 };
 
-export function closeModalOverlay() {
-    modalOverlay.addEventListener('click', function () {
-        modalWindow.style.display = 'none';
-    })
-};
-
-export function closeModalEsc(evt) {
-    if (evt.key === 'Escape' && modalWindow.style.display === 'flex') {
-        modalWindow.style.display = 'none';
+export function closeModalOverlay(evt) {
+    if (evt.target === modalWindow) {
+        modalWindow.style.display = 'none'; 
         document.removeEventListener('keydown', closeModalEsc);
     }
 };
 
-
+export function closeModalEsc(evt) {
+    if (evt.key === 'Escape') {
+        modalWindow.style.display = 'none';
+        document.removeEventListener('keydown', closeModalEsc);
+    }
+};
