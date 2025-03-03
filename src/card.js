@@ -14,3 +14,4 @@ export function deleteCard(evt) {
     const buttonList = eventClick.closest('.card');
     buttonList.remove();
 };
+
