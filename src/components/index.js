@@ -1,7 +1,7 @@
 import './pages/index.css';
 import { initialCards } from './cards.js';
-import { createCard, deleteCard } from './card.js';
-
+import { createCard, deleteCard, addLike } from './card.js';
+import { openModal, closeModal } from './modal.js';
 
 const listCard = document.querySelector('.places__list');
 
@@ -29,13 +29,6 @@ const popupImage = document.querySelector('.popup__image');
 buttonEditProfile.addEventListener('click', () => openModal(popupEditProfile));
 buttonAddCard.addEventListener('click', () => openModal(popupAddCard));
 
-function openModal(currentModal) {
-    currentModal.classList.add('popup_is-opened', 'popup_is-animated');
-};
-
-function closeModal(currentModal) {
-    currentModal.classList.remove('popup_is-opened', 'popup_is-animated');
-};
 
 cardList.addEventListener('click', function (evt) {
     if (evt.target.classList.contains('card__image')) {
@@ -100,12 +93,6 @@ formAddCard.addEventListener('submit', function (evt) {
     closeModal(popupAddCard);
 });
 
-function addLike(evt) {
-    if (evt.target.classList.contains('card__like-button')) {
-        evt.target.classList.toggle('card__like-button_is-active');
-    }
-};
-
 likeButtons.forEach(function (item) {
     item.addEventListener('click', addLike);
 });
@@ -113,14 +100,14 @@ likeButtons.forEach(function (item) {
 document.addEventListener('click', function (evt) {
     if (evt.target.classList.contains('card__image')) {
         const imageSrc = evt.target.src;
-        const imageAlt = evt.target.alt; 
-        openPopupImage(imageSrc, imageAlt); 
+        const imageAlt = evt.target.alt;
+        openPopupImage(imageSrc, imageAlt);
     }
 });
 
 function openPopupImage(imageSrc, imageAlt) {
-    popupImage.src = imageSrc; 
-    popupImage.alt = imageAlt; 
-    popupDescription.textContent = imageAlt; 
+    popupImage.src = imageSrc;
+    popupImage.alt = imageAlt;
+    popupDescription.textContent = imageAlt;
     openModal(showPopup);
 };
