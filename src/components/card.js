@@ -1,13 +1,14 @@
-export function createCard(Card, deleteCard) {
+export function createCard(card, deleteCard, addLike, searchInfoAboutImgPopup) {
     const templateList = document.querySelector('#card-template').content;
     const templateCard = templateList.querySelector('.card').cloneNode(true);
     const image = templateCard.querySelector('.card__image');
-    image.src = Card.link;
-    image.alt = Card.name;
-    templateCard.querySelector('.card__title').textContent = Card.name;
+    image.src = card.link;
+    image.alt = card.name;
+    templateCard.querySelector('.card__title').textContent = card.name;
     templateCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
     return templateCard;
 };
+
 
 export function deleteCard(evt) {
     const eventClick = evt.target;
