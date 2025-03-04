@@ -1,4 +1,4 @@
-export function createCard(card, deleteCard, addLike, searchInfoAboutImgPopup) {
+export function createCard(card, deleteCard) {
     const templateList = document.querySelector('#card-template').content;
     const templateCard = templateList.querySelector('.card').cloneNode(true);
     const image = templateCard.querySelector('.card__image');

@@ -6,7 +6,7 @@ import { openModal, closeModal, closeOverlay } from './modal.js';
 const listCard = document.querySelector('.places__list');
 
 initialCards.forEach(function (item) {
-    const newCard = createCard(item, deleteCard);
+    const newCard = createCard(item, deleteCard, openCardsPopup, searchInfoAboutImgPopup, arrayLikes);
     listCard.append(newCard);
 });
 
@@ -14,7 +14,6 @@ const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const buttonAddCard = document.querySelector('.profile__add-button');
 const popupAddCard = document.querySelector('.popup_type_new-card');
-const cardList = document.querySelector('.places__list');
 const nameInput = document.querySelector('.popup__input_type_name');
 const jobInput = document.querySelector('.popup__input_type_description');
 const nameTitle = document.querySelector('.profile__title');
@@ -28,12 +27,12 @@ const popupImage = document.querySelector('.popup__image');
 
 buttonAddCard.addEventListener('click', () => openModal(popupAddCard));
 
-cardList.addEventListener('click', function (evt) {
+function openCardsPopup(evt) {
     if (evt.target.classList.contains('card__image')) {
         const cardList = document.querySelector('.popup_type_image')
         openModal(cardList);
     };
-});
+};
 
 document.addEventListener('click', function (evt) {
     if (evt.target.classList.contains('popup__close')) {
@@ -47,7 +46,7 @@ document.addEventListener('click', closeOverlay);
 buttonEditProfile.addEventListener('click', function () {
     nameInput.value = nameTitle.textContent;
     jobInput.value = jobTitle.textContent;
-    openModal(popupEditProfile)
+    openModal(popupEditProfile);
 });
 
 function editProfile(evt) {
@@ -72,13 +71,13 @@ likeButtons.forEach(arrayLikes);
 
 function arrayLikes(item) {
     item.addEventListener('click', addLike);
-};
+};          
 
 document.addEventListener('click', searchInfoAboutImgPopup);
 
 export function searchInfoAboutImgPopup(evt) {
-    if (evt.target.classList.contains('card__image')) {
-        const imageSrc = evt.target.src;
+        if (evt.target.classList.contains('card__image')) {
+            const imageSrc = evt.target.src;
         const imageAlt = evt.target.alt;
         openPopupImage(imageSrc, imageAlt);
     }
