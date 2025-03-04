@@ -25,3 +25,4 @@ export function closeModalEsc(evt) {
         }
     }
 };
+

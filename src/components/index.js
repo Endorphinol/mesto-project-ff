@@ -18,9 +18,10 @@ const likeButtons = document.querySelectorAll('.card__like-button');
 const showPopup = document.querySelector('.popup_type_image');
 const popupDescription = document.querySelector('.popup__caption');
 const popupImage = document.querySelector('.popup__image');
+const cardList = document.querySelector('.places__list');
 
 initialCards.forEach(function (item) {
-    const newCard = createCard(item, deleteCard, addLike, openCardsPopup, searchInfoAboutImgPopup);
+    const newCard = createCard(item, deleteCard, addLike, openCardsPopup, searchInfoAboutImgPopup, likeEventer);
     listCard.append(newCard);
 });
 
@@ -57,22 +58,28 @@ function editProfile(evt) {
 formEditProfile.addEventListener('submit', editProfile);
 
 formAddCard.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-    const addNewCardName = document.querySelector('.popup__input_type_card-name').value;
-    const addNewCardUrl = document.querySelector('.popup__input_type_url').value;
-    const newCard = createCard(addNewCardName, addNewCardUrl);
-    listCard.prepend(newCard)
-    formAddCard.reset();
-    closeModal(popupAddCard);
-});
+    evt.preventDefault(); 
+    const item = [{ 
+        link: document.querySelector('.popup__input_type_url').value,
+        name: document.querySelector('.popup__input_type_card-name').value; 
+        }];
+    item.forEach(function (item) {
+        const newCard = createCard(item, deleteCard, addLike, openCardsPopup, searchInfoAboutImgPopup, likeEventer);
+        cardList.prepend(newCard);
+    });
+    formAddCard.reset(); 
+    closeModal(popupAddCard); 
+}); 
 
-likeButtons.forEach(function (item) {
+likeButtons.forEach(likeEventer);
+
+function likeEventer(item) {
     item.addEventListener('click', addLike);
-});     
+};     
 
 document.addEventListener('click', searchInfoAboutImgPopup);
 
-export function searchInfoAboutImgPopup(evt) {
+function searchInfoAboutImgPopup(evt) {
     if (evt.target.classList.contains('card__image')) {
     const imageSrc = evt.target.src;
     const imageAlt = evt.target.alt;
