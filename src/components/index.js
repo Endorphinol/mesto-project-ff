@@ -4,12 +4,6 @@ import { createCard, deleteCard, addLike } from './card.js';
 import { openModal, closeModal, closeOverlay } from './modal.js';
 
 const listCard = document.querySelector('.places__list');
-
-initialCards.forEach(function (item) {
-    const newCard = createCard(item, deleteCard, openCardsPopup, searchInfoAboutImgPopup, arrayLikes);
-    listCard.append(newCard);
-});
-
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const buttonAddCard = document.querySelector('.profile__add-button');
@@ -24,6 +18,11 @@ const likeButtons = document.querySelectorAll('.card__like-button');
 const showPopup = document.querySelector('.popup_type_image');
 const popupDescription = document.querySelector('.popup__caption');
 const popupImage = document.querySelector('.popup__image');
+
+initialCards.forEach(function (item) {
+    const newCard = createCard(item, deleteCard, openCardsPopup, searchInfoAboutImgPopup, arrayLikes);
+    listCard.append(newCard);
+});
 
 buttonAddCard.addEventListener('click', () => openModal(popupAddCard));
 
@@ -62,7 +61,8 @@ formAddCard.addEventListener('submit', function (evt) {
     evt.preventDefault();
     const addNewCardName = document.querySelector('.popup__input_type_card-name').value;
     const addNewCardUrl = document.querySelector('.popup__input_type_url').value;
-    addCard(addNewCardName, addNewCardUrl);
+    const newCard = createCard(addNewCardName, addNewCardUrl);
+    listCard.append(newCard)
     formAddCard.reset();
     closeModal(popupAddCard);
 });
@@ -77,7 +77,7 @@ document.addEventListener('click', searchInfoAboutImgPopup);
 
 export function searchInfoAboutImgPopup(evt) {
         if (evt.target.classList.contains('card__image')) {
-            const imageSrc = evt.target.src;
+        const imageSrc = evt.target.src;
         const imageAlt = evt.target.alt;
         openPopupImage(imageSrc, imageAlt);
     }
