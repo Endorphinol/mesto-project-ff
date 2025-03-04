@@ -9,7 +9,6 @@ export function createCard(card, deleteCard) {
     return templateCard;
 };
 
-
 export function deleteCard(evt) {
     const eventClick = evt.target;
     const buttonList = eventClick.closest('.card');
@@ -21,3 +20,4 @@ export function addLike(evt) {
         evt.target.classList.toggle('card__like-button_is-active');
     }
 };
+

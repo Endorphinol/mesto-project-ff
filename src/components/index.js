@@ -1,7 +1,7 @@
 import '../pages/index.css';
 import { initialCards } from './cards.js';
 import { createCard, deleteCard, addLike } from './card.js';
-import { openModal, closeModal, closeOverlay } from './modal.js';
+import { openModal, closeModal, closeOverlay, closeModalEsc} from './modal.js';
 
 const listCard = document.querySelector('.places__list');
 const buttonEditProfile = document.querySelector('.profile__edit-button');
@@ -20,11 +20,12 @@ const popupDescription = document.querySelector('.popup__caption');
 const popupImage = document.querySelector('.popup__image');
 
 initialCards.forEach(function (item) {
-    const newCard = createCard(item, deleteCard, openCardsPopup, searchInfoAboutImgPopup, arrayLikes);
+    const newCard = createCard(item, deleteCard, addLike, openCardsPopup, searchInfoAboutImgPopup);
     listCard.append(newCard);
 });
 
 buttonAddCard.addEventListener('click', () => openModal(popupAddCard));
+document.addEventListener('click', closeOverlay);
 
 function openCardsPopup(evt) {
     if (evt.target.classList.contains('card__image')) {
@@ -39,8 +40,6 @@ document.addEventListener('click', function (evt) {
         closeModal(currentModal);
     }
 });
-
-document.addEventListener('click', closeOverlay);
 
 buttonEditProfile.addEventListener('click', function () {
     nameInput.value = nameTitle.textContent;
@@ -62,24 +61,22 @@ formAddCard.addEventListener('submit', function (evt) {
     const addNewCardName = document.querySelector('.popup__input_type_card-name').value;
     const addNewCardUrl = document.querySelector('.popup__input_type_url').value;
     const newCard = createCard(addNewCardName, addNewCardUrl);
-    listCard.append(newCard)
+    listCard.prepend(newCard)
     formAddCard.reset();
     closeModal(popupAddCard);
 });
 
-likeButtons.forEach(arrayLikes);
-
-function arrayLikes(item) {
+likeButtons.forEach(function (item) {
     item.addEventListener('click', addLike);
-};          
+});     
 
 document.addEventListener('click', searchInfoAboutImgPopup);
 
 export function searchInfoAboutImgPopup(evt) {
-        if (evt.target.classList.contains('card__image')) {
-        const imageSrc = evt.target.src;
-        const imageAlt = evt.target.alt;
-        openPopupImage(imageSrc, imageAlt);
+    if (evt.target.classList.contains('card__image')) {
+    const imageSrc = evt.target.src;
+    const imageAlt = evt.target.alt;
+    openPopupImage(imageSrc, imageAlt);
     }
 };
 
