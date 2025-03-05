@@ -11,19 +11,19 @@
 	</head>
 	<body class="page">
 		<div class="page__content">
-			<header class="header page__section">
-				<img
-					src="<%=require('./images/logo.svg')%>"
-					alt="Логотип проекта масто"
-					class="logo header__logo"
-				/>
-			</header>
+			<header class="header page__section"> 
+				<img 
+					src="<%=require('./images/logo.svg')%>" 
+					alt="Логотип проекта масто" 
+					class="logo header__logo" 
+				/> 
+			</header> 
 			<main class="content">
 				<section class="profile page__section">
 					<div
 						class="profile__image"
-						style="background-image: url('<%= require('./images/avatar.jpg')%>');">
-          </div>
+						style="background-image: url('<%=require('./images/avatar.jpg')%>')"
+					></div>
 					<div class="profile__info">
 						<h1 class="profile__title">Жак-Ив Кусто</h1>
 						<button class="profile__edit-button" type="button"></button>
@@ -88,7 +88,7 @@
 					</form>
 				</div>
 			</div>
-			<div class="popup">
+			<div class="popup popup_type_image">
 				<div class="popup__content popup__content_content_image">
 					<button type="button" class="popup__close"></button>
 					<img src="" alt="" class="popup__image" />
