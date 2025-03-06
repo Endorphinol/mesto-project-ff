@@ -5,7 +5,7 @@ export function createCard(card, deleteCard, addLike, showPopupImage) {
     templateCard.querySelector('.card__title').textContent = card.name;
     templateCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
     templateCard.querySelector('.card__like-button').addEventListener('click', addLike);
-    image.addEventListener('click', showPopupImage);
+    image.addEventListener('click', () => showPopupImage(card.link, card.name));
     image.src = card.link;
     image.alt = card.name;
     return templateCard;

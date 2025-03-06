@@ -59,16 +59,6 @@ formAddCard.addEventListener('submit', function (evt) {
     closeModal(popupAddCard);
 });
 
-document.addEventListener('click', findImage);
-
-function findImage(evt) {
-    if (evt.target.classList.contains('card__image')) {
-        const imageSrc = evt.target.src;
-        const imageAlt = evt.target.alt;
-        showPopupImage(imageSrc, imageAlt);
-    }
-};
-
 function showPopupImage(imageSrc, imageAlt) {
     popupImage.src = imageSrc;
     popupImage.alt = imageAlt;
