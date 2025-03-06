@@ -13,13 +13,13 @@ const nameTitle = document.querySelector('.profile__title');
 const jobTitle = document.querySelector('.profile__description');
 const formEditProfile = document.querySelector('.popup__form[name="edit-profile"]');
 const formAddCard = document.querySelector('.popup__form[name="new-place"]');
-const showPopup = document.querySelector('.popup_type_image');
-const popupImageDescription = document.querySelector('.popup__caption');
 const popupImage = document.querySelector('.popup__image');
+const popupImageOpen = document.querySelector('.popup_type_image');
+const popupImageDescription = document.querySelector('.popup__caption');
 const cardList = document.querySelector('.places__list');
 
 initialCards.forEach(function (item) {
-    const newCard = createCard(item, deleteCard, addLike, showPopupImage);
+    const newCard = createCard(item, deleteCard, addLike, openPopupImage);
     cardList.append(newCard);
 });
 
@@ -53,17 +53,17 @@ formAddCard.addEventListener('submit', function (evt) {
         link: document.querySelector('.popup__input_type_url').value,
         name: document.querySelector('.popup__input_type_card-name').value
     };
-    const newCard = createCard(item, deleteCard, addLike, showPopupImage);
+    const newCard = createCard(item, deleteCard, addLike, openPopupImage);
     cardList.prepend(newCard);
     formAddCard.reset();
     closeModal(popupAddCard);
 });
 
-function showPopupImage(imageSrc, imageAlt) {
+function openPopupImage(imageSrc, imageAlt) {
     popupImage.src = imageSrc;
     popupImage.alt = imageAlt;
     popupImageDescription.textContent = imageAlt;
-    openModal(showPopup);
+    openModal(popupImageOpen);
 };
 
 document.addEventListener('click', closeOverlay);
