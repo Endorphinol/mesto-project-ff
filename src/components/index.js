@@ -1,7 +1,7 @@
 import '../pages/index.css';
 import { initialCards } from './cards.js';
 import { createCard, deleteCard, addLike } from './card.js';
-import { openModal, closeModal, closeOverlay } from './modal.js';
+import { openModal, closeModal, closeModalOverlay } from './modal.js';
 
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
@@ -66,4 +66,4 @@ function openPopupImage(imageSrc, imageAlt) {
     openModal(popupImageOpen);
 };
 
-document.addEventListener('click', closeOverlay);
+document.addEventListener('click', closeModalOverlay);
