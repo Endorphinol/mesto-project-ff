@@ -10,7 +10,7 @@ export function closeModal(currentModal) {
 };
 
 export function closeModalOverlay(evt) {
-    const currentModal = document.querySelector('.popup_is-opened');
+    const currentModal = document.querySelector('popup_is-opened');
     if (evt.target === currentModal) {
         closeModal(currentModal);
     }
@@ -18,7 +18,7 @@ export function closeModalOverlay(evt) {
 
 export function closeModalEscape(evt) {
     if (evt.key === 'Escape') {
-        const currentModal = document.querySelector('.popup_is-opened');
+        const currentModal = document.querySelector('popup_is-opened');
         if (currentModal) {
             closeModal(currentModal);
         }

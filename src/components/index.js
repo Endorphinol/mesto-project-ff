@@ -17,6 +17,7 @@ const popupImage = document.querySelector('.popup__image');
 const popupImageOpen = document.querySelector('.popup_type_image');
 const popupImageDescription = document.querySelector('.popup__caption');
 const cardList = document.querySelector('.places__list');
+const allPopups = document.querySelectorAll('.popup');
 
 initialCards.forEach(function (item) {
     const newCard = createCard(item, deleteCard, addLike, openPopupImage);
@@ -65,5 +66,9 @@ function openPopupImage(imageSrc, imageAlt) {
     popupImageDescription.textContent = imageAlt;
     openModal(popupImageOpen);
 };
+
+allPopups.forEach(function (item) {
+    item.classList.add('.popup_is-animated')
+});
 
 document.addEventListener('click', closeModalOverlay);
