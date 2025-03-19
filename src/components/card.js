@@ -1,14 +1,14 @@
 export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     const templateList = document.querySelector('#card-template').content;
     const templateCard = templateList.querySelector('.card').cloneNode(true);
+    const likeButton = templateCard.querySelector('.card__like-button');
     const image = templateCard.querySelector('.card__image');
     const likesCount = templateCard.querySelector('.card__count');
-    likesCount.textContent = card.likes.length;
-    console.log(getUser)
+    likesCount.textContent = card.likes ? card.likes.length : 0;
 
     templateCard.querySelector('.card__title').textContent = card.name;
     templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(templateCard, card._id));
-    templateCard.querySelector('.card__like-button').addEventListener('click', addLike);
+    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likesCount, likeButton, card._id));
 
     if (getUser !== card.owner._id) {
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
@@ -34,8 +34,22 @@ export function deleteCard(cardElement, idCard) {
         })
 };
 
-export function addLike(evt) {
-    if (evt.target.classList.contains('card__like-button')) {
-        evt.target.classList.toggle('card__like-button_is-active');
-    }
-};
+export function addLike(likesCount, likeButton, cardId) {
+    const isLiked = likeButton.classList.contains('card__like-button_active');
+
+    fetch(`https://nomoreparties.co/v1/wff-cohort-35/cards/likes/${cardId}`, {
+        method: isLiked ? 'DELETE' : 'PUT',
+        headers: {
+            authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea'
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .then((data) => {
+            likesCount.textContent = data.likes.length;
+            likeButton.classList.toggle('card__like-button_active');
+        })
+}
