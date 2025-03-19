@@ -80,21 +80,3 @@ export function clearValidation(formElement, configValidation) {
     buttonElement.disabled = true;
     buttonElement.classList.add(configValidation.inactiveButtonClass);
 }
-
-/**
- * Объект опции
- * 1. Элемент формы.
- * 2. Элемент поля ввода.
- * 3. Кнопка отправки формы.
- * 4. Класс для отключения кнопки.
- * 5. Класс для выделения попапа цветом.
- * 6. Класс для отображения попапа.
- */
-export const configValidation = {
-    formSelector: '.popup__form',
-    inputSelector: '.popup__input',
-    submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disabled',
-    inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
-};
