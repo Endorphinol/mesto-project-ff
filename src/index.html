@@ -38,25 +38,37 @@
 			<footer class="footer page__section">
 				<p class="footer__copyright">© 2021 Mesto Russia</p>
 			</footer>
-			<div class="popup popup_type_edit popup_is-animated"> 
+			<div class="popup popup_type_edit popup_is-animated">
 				<div class="popup__content">
 					<button type="button" class="popup__close"></button>
 					<h3 class="popup__title">Редактировать профиль</h3>
 					<form class="popup__form" name="edit-profile">
 						<input
 							type="text"
+							id="name-input"
 							name="name"
 							class="popup__input popup__input_type_name"
 							placeholder="Имя"
 							required
+							minlength="2"
+							maxlength="40"
+							pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+"
+							data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
 						/>
+						<span class="name-input-error"></span>
 						<input
 							type="text"
+							id="job-input"
 							name="description"
 							class="popup__input popup__input_type_description"
 							placeholder="Занятие"
 							required
+							minlength="2"
+							maxlength="200"
+							pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+"
+							data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
 						/>
+						<span class="job-input-error popup__error_visible"></span>
 						<button type="submit" class="button popup__button">
 							Сохранить
 						</button>
@@ -70,18 +82,28 @@
 					<form class="popup__form" name="new-place">
 						<input
 							type="text"
+							id="place-input"
 							name="place-name"
 							class="popup__input popup__input_type_card-name"
 							placeholder="Название"
+							minlength="2"
+							maxlength="30"
 							required
+							pattern="[a-zA-Zа-яА-ЯёЁ\s\-]+"
+							data-error-message="Вы пропустили это поле."
 						/>
+						<span class="place-input-error popup__error_visible"></span>
 						<input
 							type="url"
+							id="link-input"
 							name="link"
 							class="popup__input popup__input_type_url"
 							placeholder="Ссылка на картинку"
 							required
+							pattern="https?:\/\/\S+\.\S+"
+							data-error-message="Введите адрес сайта."
 						/>
+						<span class="link-input-error popup__error_visible"></span>
 						<button type="submit" class="button popup__button">
 							Сохранить
 						</button>
