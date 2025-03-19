@@ -7,7 +7,7 @@ export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     console.log(getUser)
 
     templateCard.querySelector('.card__title').textContent = card.name;
-    templateCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
+    templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(templateCard, card._id));
     templateCard.querySelector('.card__like-button').addEventListener('click', addLike);
 
     if (getUser !== card.owner._id) {
@@ -20,10 +20,18 @@ export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     return templateCard;
 };
 
-export function deleteCard(evt) {
-    const eventClick = evt.target;
-    const buttonList = eventClick.closest('.card');
-    buttonList.remove();
+export function deleteCard(cardElement, idCard) {
+    fetch(`https://nomoreparties.co/v1/wff-cohort-35/cards/${idCard}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea'
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                cardElement.remove();
+            }
+        })
 };
 
 export function addLike(evt) {
