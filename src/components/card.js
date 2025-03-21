@@ -3,18 +3,20 @@ export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     const templateCard = templateList.querySelector('.card').cloneNode(true);
     const likeButton = templateCard.querySelector('.card__like-button');
     const image = templateCard.querySelector('.card__image');
-    const likesCount = templateCard.querySelector('.card__count');
-    likesCount.textContent = card.likes ? card.likes.length : 0;
-
+    const likeCount = templateCard.querySelector('.card__count');
+    likeCount.textContent = card.likes ? card.likes.length : 0;
     templateCard.querySelector('.card__title').textContent = card.name;
     templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(templateCard, card._id));
-    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likesCount, likeButton, card._id));
+    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likeCount, likeButton, card._id));
 
     if (getUser !== card.owner._id) {
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
     }
 
-    image.addEventListener('click', () => openPopupImage(card.link, card.name));
+    image.addEventListener('click', function () {
+        openPopupImage(card.link, card.name)
+    });
+
     image.src = card.link;
     image.alt = card.name;
     return templateCard;
@@ -34,8 +36,8 @@ export function deleteCard(cardElement, idCard) {
         })
 };
 
-export function addLike(likesCount, likeButton, cardId) {
-    const isLiked = likeButton.classList.contains('card__like-button_active');
+export function addLike(likeCount, likeButton, cardId) {
+    const isLiked = likeButton.classList.contains('card__like-button_is-active');
 
     fetch(`https://nomoreparties.co/v1/wff-cohort-35/cards/likes/${cardId}`, {
         method: isLiked ? 'DELETE' : 'PUT',
@@ -49,7 +51,8 @@ export function addLike(likesCount, likeButton, cardId) {
             }
         })
         .then((data) => {
-            likesCount.textContent = data.likes.length;
-            likeButton.classList.toggle('card__like-button_active');
+            likeCount.textContent = data.likes.length;
+            likeButton.classList.toggle('card__like-button_is-active');
         })
 }
+
