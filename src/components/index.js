@@ -31,6 +31,7 @@ const cardList = document.querySelector('.places__list');
  * 5. Класс для выделения попапа цветом.
  * 6. Класс для отображения попапа.
  */
+
 const configValidation = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
@@ -142,7 +143,7 @@ formAddCard.addEventListener('submit', function (evt) {
         name: document.querySelector('.popup__input_type_card-name').value,
         link: document.querySelector('.popup__input_type_url').value,
     }
-    
+
     fetch('https://nomoreparties.co/v1/wff-cohort-35/cards', {
         method: 'POST',
         headers: {
@@ -151,14 +152,14 @@ formAddCard.addEventListener('submit', function (evt) {
         },
         body: JSON.stringify({
             name: item.name,
-            link: item.link
+            link: item.link,
         })
     })
         .then((response) => {
             return response.json();
         })
         .then((data) => {
-            const newCard = createCard(data, deleteCard, addLike, userData._id, openPopupImage);
+            const newCard = createCard(data, deleteCard, addLike, data.owner._id, openPopupImage);
             cardList.prepend(newCard);
         })
         .finally(() => {
