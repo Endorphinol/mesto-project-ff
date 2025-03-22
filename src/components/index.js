@@ -43,7 +43,6 @@ const configValidation = {
     errorClass: 'popup__error_visible'
 };
 
-
 // Открытие модального окна по нажатию на аватарку. 
 Avatar.addEventListener('click', function () {
     clearValidation(formEditProfile, configValidation);
@@ -85,6 +84,7 @@ document.addEventListener('click', closeModalOverlay);
 
 enableValidation(configValidation);
 
+// Обновление фотографии.
 formPhotoProfile.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
@@ -95,6 +95,7 @@ formPhotoProfile.addEventListener('submit', function (evt) {
     updatePhoto(newAvatarPhoto, buttonElement, closeModal, popupNewAvatar, Avatar);
 });
 
+// Редактирование профиля.
 formEditProfile.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
@@ -107,6 +108,7 @@ formEditProfile.addEventListener('submit', function (evt) {
     updateProfile(nameInput, jobInput, jobTitle, nameTitle, closeModal, popupEditProfile, buttonElement);
 });
 
+// Добавление карточки.
 formAddCard.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
