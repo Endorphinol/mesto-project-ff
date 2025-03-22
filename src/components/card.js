@@ -10,6 +10,8 @@ export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likeCount, likeButton, card._id));
 
     if (getUser !== card.owner._id) {
+        console.log(getUser)
+        console.log(card.owner._id);
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
     }
 
@@ -29,10 +31,13 @@ export function deleteCard(cardElement, idCard) {
             authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea'
         }
     })
-        .then(res => {
-            if (res.ok) {
+        .then((response) => {
+            if (response.ok) {
                 cardElement.remove();
             }
+        })
+        .catch((error) => {
+            console.log('Ошибка', error);
         })
 };
 
@@ -53,6 +58,9 @@ export function addLike(likeCount, likeButton, cardId) {
         .then((data) => {
             likeCount.textContent = data.likes.length;
             likeButton.classList.toggle('card__like-button_is-active');
+        })
+        .catch((error) => {
+            console.log('Ошибка', error);
         })
 }
 
