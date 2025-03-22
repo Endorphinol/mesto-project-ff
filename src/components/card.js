@@ -10,8 +10,6 @@ export function createCard(card, deleteCard, addLike, getUser, openPopupImage) {
     templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likeCount, likeButton, card._id));
 
     if (getUser !== card.owner._id) {
-        console.log(getUser)
-        console.log(card.owner._id);
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
     }
 

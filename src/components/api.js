@@ -1,31 +1,40 @@
-// Обновление фотографии пользователя на сайте.
-export const updatePhoto = formPhotoProfile.addEventListener('submit', function (evt) {
-    evt.preventDefault();
+export const config = {
+    baseUrl: 'https://nomoreparties.co/v1/wff-cohort-35',
+    headers: {
+        authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea',
+        'Content-Type': 'application/json'
+    }
+}
 
-    const buttonElement = formPhotoProfile.querySelector('.popup__button');
-    buttonElement.textContent = "Сохранение...";
-    buttonElement.disabled = true;
-
-    fetch(`${newAvatarPhoto.value}`, {
+// Проверка фотографии.
+export const updatePhotoCheck = (url) => {
+    return fetch(`${url.value}`, {
         method: 'HEAD',
     })
         .then(response => {
             if (!response.ok) {
                 console.log('Произошла ошибка');
             }
-            const contentType = response.headers.get('Content-Type')
+            const contentType = response.headers.get('Content-Type');
             if (!contentType.startsWith('image/')) {
                 console.log('URL не является картинкой')
             }
         })
         .catch((error) => {
             console.log('Ошибка', error);
-        });
+        })
+};
 
-    fetch('https://nomoreparties.co/v1/wff-cohort-35/users/me/avatar', {
+// Обновление фотографии пользователя на сайте.
+export const updatePhoto = (newAvatarPhoto,
+    buttonElement,
+    closeModal,
+    popupNewAvatar,
+    Avatar) => {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
         headers: {
-            authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea',
+            authorization: `${config.headers.authorization}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -36,7 +45,7 @@ export const updatePhoto = formPhotoProfile.addEventListener('submit', function 
             if (response.ok) {
                 return response.json();
             }
-            return Promise.reject(`Ошибка: ${res.status}`);
+            return Promise.reject(`Ошибка: ${response.status}`);
         })
         .then((data) => {
             Avatar.style.backgroundImage = `url(${data.avatar})`;
@@ -49,23 +58,21 @@ export const updatePhoto = formPhotoProfile.addEventListener('submit', function 
         .catch((error) => {
             console.log('Ошибка:', error);
         })
-});
+};
 
 // Редактирование имени и деятельности пользователя на сайте.
-export const udpateProfile = formEditProfile.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-
-    nameTitle.textContent = nameInput.value;
-    jobTitle.textContent = jobInput.value;
-
-    const buttonElement = formEditProfile.querySelector('.popup__button');
-    buttonElement.textContent = "Сохранение..."
-    buttonElement.disabled = true;
-
-    fetch('https://nomoreparties.co/v1/wff-cohort-35/users/me', {
+export const updateProfile = (
+    nameInput,
+    jobInput,
+    jobTitle,
+    nameTitle,
+    closeModal,
+    popupEditProfile,
+    buttonElement) => {
+    return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
         headers: {
-            authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea',
+            authorization: `${config.headers.authorization}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -77,14 +84,13 @@ export const udpateProfile = formEditProfile.addEventListener('submit', function
             if (response.ok) {
                 return response.json();
             }
-            return Promise.reject(`Ошибка: ${res.status}`);
+            return Promise.reject(`Ошибка: ${response.status}`);
         })
         .then((data) => {
-            jobTitle.textContent = data.name;
+            nameTitle.textContent = data.name;
             jobTitle.textContent = data.about;
         })
         .finally(() => {
-            clearValidation(formAddCard, configValidation)
             buttonElement.textContent = "Сохранено"
             buttonElement.disabled = false;
             closeModal(popupEditProfile);
@@ -92,25 +98,26 @@ export const udpateProfile = formEditProfile.addEventListener('submit', function
         .catch((error) => {
             console.log('Ошибка', error);
         })
-});
+};
 
 // Добавление карточки на сайт.
-export const addCard = formAddCard.addEventListener('submit', function (evt) {
-    evt.preventDefault();
-
-    const buttonElement = formAddCard.querySelector('.popup__button');
-    buttonElement.textContent = "Сохранение...";
-    buttonElement.disabled = true;
-
+export const addCard = (buttonElement,
+    closeModal,
+    formAddCard,
+    popupAddCard,
+    createCard,
+    deleteCard,
+    addLike,
+    openPopupImage,
+    cardList) => {
     const item = {
         name: document.querySelector('.popup__input_type_card-name').value,
         link: document.querySelector('.popup__input_type_url').value,
     }
-
-    fetch('https://nomoreparties.co/v1/wff-cohort-35/cards', {
+    return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
         headers: {
-            authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea',
+            authorization: `${config.headers.authorization}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -122,7 +129,7 @@ export const addCard = formAddCard.addEventListener('submit', function (evt) {
             if (response.ok) {
                 return response.json();
             }
-            return Promise.reject(`Ошибка: ${res.status}`);
+            return Promise.reject(`Ошибка: ${response.status}`);
         })
         .then((data) => {
             const newCard = createCard(data, deleteCard, addLike, data.owner._id, openPopupImage);
@@ -137,27 +144,52 @@ export const addCard = formAddCard.addEventListener('submit', function (evt) {
         .catch((error) => {
             console.log('Ошибка', error);
         })
-});
+};
 
 // Загрузка информации о пользователе с сервера.
-export const getUserData = fetch('https://nomoreparties.co/v1/wff-cohort-35/users/me', {
-    method: 'GET',
-    headers: {
-        authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea'
-    }
-})
-    .then((response) => {
-        if (response.ok) {
-            return response.json();
+export const getUserData = (nameTitle, jobTitle) => {
+    return fetch(`${config.baseUrl}/users/me`, {
+        method: 'GET',
+        headers: {
+            authorization: `${config.headers.authorization}`,
         }
-        return Promise.reject(`Ошибка: ${res.status}`);
     })
-    .then((data) => {
-        document.querySelector('.profile__image').style.backgroundImage = `url(${data.avatar})`;
-        nameTitle.textContent = data.name;
-        jobTitle.textContent = data.about;
-        return data;
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(`Ошибка: ${response.status}`);
+        })
+        .then((data) => {
+            document.querySelector('.profile__image').style.backgroundImage = `url(${data.avatar})`;
+            nameTitle.textContent = data.name;
+            jobTitle.textContent = data.about;
+            return data;
+        })
+        .catch((error) => {
+            console.log('Ошибка', error);
+        })
+};
+
+// Загрузка карточек с сервера.
+export const getCreatesCards = () => {
+    return fetch(`${config.baseUrl}/cards`, {
+        method: 'GET',
+        headers: {
+            authorization: `${config.headers.authorization}`,
+        }
     })
-    .catch((error) => {
-        console.log('Ошибка', error);
-    });
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(`Ошибка: ${response.status}`);
+
+        })
+        .then((data) => {
+            return data;
+        })
+        .catch(() => {
+            console.log('Ошибка', error);
+        })
+};

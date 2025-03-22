@@ -2,14 +2,13 @@ import '../pages/index.css';
 import { createCard, deleteCard, addLike } from './card.js';
 import { openModal, closeModal, closeModalOverlay } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { updatePhoto, udpateProfile, addCard, getUserData} from './api.js';
+import { config, updatePhotoCheck, updatePhoto, updateProfile, addCard, getUserData, getCreatesCards } from './api.js';
 
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const buttonAddCard = document.querySelector('.profile__add-button');
 const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupNewAvatar = document.querySelector('.popup_type_new_avatar');
-const newAvatarPhoto = document.querySelector('.popup__input_type_avatar');
 const Avatar = document.querySelector('.profile__image');
 const nameInput = document.querySelector('.popup__input_type_name');
 const jobInput = document.querySelector('.popup__input_type_description');
@@ -17,11 +16,13 @@ const nameTitle = document.querySelector('.profile__title');
 const jobTitle = document.querySelector('.profile__description');
 const formEditProfile = document.querySelector('.popup__form[name="edit-profile"]');
 const formAddCard = document.querySelector('.popup__form[name="new-place"]');
-const formPhotoProfile = document.querySelector('.popup__form[name="new-avatar"]');
 const popupImage = document.querySelector('.popup__image');
 const popupImageOpen = document.querySelector('.popup_type_image');
 const popupImageDescription = document.querySelector('.popup__caption');
 const cardList = document.querySelector('.places__list');
+const formPhotoProfile = document.querySelector('.popup__form[name="new-avatar"]');
+const newAvatarPhoto = document.querySelector('.popup__input_type_avatar');
+
 
 /**
  * Объект опции:
@@ -84,14 +85,45 @@ document.addEventListener('click', closeModalOverlay);
 
 enableValidation(configValidation);
 
+formPhotoProfile.addEventListener('submit', function (evt) {
+    evt.preventDefault();
 
-const promises = [getUserData, getCardsServer];
+    const buttonElement = formPhotoProfile.querySelector('.popup__button');
+    buttonElement.textContent = "Сохранение...";
+    buttonElement.disabled = true;
+    updatePhotoCheck(newAvatarPhoto);
+    updatePhoto(newAvatarPhoto, buttonElement, closeModal, popupNewAvatar, Avatar);
+});
+
+formEditProfile.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    nameTitle.textContent = nameInput.value;
+    jobTitle.textContent = jobInput.value;
+
+    const buttonElement = formEditProfile.querySelector('.popup__button');
+    buttonElement.textContent = "Сохранение..."
+    buttonElement.disabled = true;
+    updateProfile(nameInput, jobInput, jobTitle, nameTitle, closeModal, popupEditProfile, buttonElement);
+});
+
+formAddCard.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    const buttonElement = formAddCard.querySelector('.popup__button');
+    buttonElement.textContent = "Сохранение...";
+    buttonElement.disabled = true;
+
+    addCard(buttonElement, closeModal, formAddCard, popupAddCard, createCard, deleteCard, addLike, openPopupImage, cardList)
+});
+
+const promises = [getUserData(nameTitle, jobTitle), getCreatesCards()];
 
 // Отображение карточек на сайте после получения информации от сервера и токена пользователя.
 Promise.all(promises)
-    .then(([userData, cardsServer]) => {
+    .then(([userData, getCreatesCards]) => {
         const getUser = userData._id;
-        cardsServer.forEach(function (item) {
+        getCreatesCards.forEach(function (item) {
             const newCard = createCard(item, deleteCard, addLike, getUser, openPopupImage);
             cardList.append(newCard);
         })
