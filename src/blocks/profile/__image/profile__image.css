@@ -21,7 +21,7 @@
 	background-size: cover;
 	background-position: center;
 	opacity: 0;
-  z-index: 2;
+	z-index: 2;
 }
 
 .profile__image:hover::before {
@@ -31,14 +31,14 @@
 .profile__image::after {
 	content: "";
 	position: absolute;
-  backdrop-filter: brightness(100%);
-  inset: 0;
+	backdrop-filter: brightness(100%);
+	inset: 0;
 	width: 120px;
 	height: 120px;
 }
 
 .profile__image:hover::after {
-  backdrop-filter: brightness(30%);
+	backdrop-filter: brightness(30%);
 }
 
 @media screen and (max-width: 740px) {

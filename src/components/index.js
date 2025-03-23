@@ -1,17 +1,17 @@
 import '../pages/index.css';
-import { createCard, deleteCard, addLike } from './card.js';
+import { createCard } from './card.js';
 import { openModal, closeModal, closeModalOverlay } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { config, updatePhotoCheck, updatePhoto, updateProfile, addCard, getUserData, getCreatesCards } from './api.js';
+import { config, updatePhotoCheck, updatePhoto, updateProfile, addCard, getUserData, initialCards, deleteCard, addLike } from './api.js';
 
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const buttonAddCard = document.querySelector('.profile__add-button');
 const popupAddCard = document.querySelector('.popup_type_new-card');
 const popupNewAvatar = document.querySelector('.popup_type_new_avatar');
-const Avatar = document.querySelector('.profile__image');
+const avatar = document.querySelector('.profile__image');
 const nameInput = document.querySelector('.popup__input_type_name');
-const jobInput = document.querySelector('.popup__input_type_description');
+const aboutInput = document.querySelector('.popup__input_type_description');
 const nameTitle = document.querySelector('.profile__title');
 const jobTitle = document.querySelector('.profile__description');
 const formEditProfile = document.querySelector('.popup__form[name="edit-profile"]');
@@ -22,7 +22,6 @@ const popupImageDescription = document.querySelector('.popup__caption');
 const cardList = document.querySelector('.places__list');
 const formPhotoProfile = document.querySelector('.popup__form[name="new-avatar"]');
 const newAvatarPhoto = document.querySelector('.popup__input_type_avatar');
-
 
 /**
  * Объект опции:
@@ -40,26 +39,26 @@ const configValidation = {
     submitButtonSelector: '.popup__button',
     inactiveButtonClass: 'popup__button_disabled',
     inputErrorClass: 'popup__input_type_error',
-    errorClass: 'popup__error_visible'
+    errorClass: 'popup__error_visible',
 };
 
 // Открытие модального окна по нажатию на аватарку. 
-Avatar.addEventListener('click', function () {
+avatar.addEventListener('click', function () {
     clearValidation(formEditProfile, configValidation);
     openModal(popupNewAvatar);
-})
+});
 
 // Открытие модального окна по нажатию на кнопку добавления карточки.
 buttonAddCard.addEventListener('click', function () {
     clearValidation(formAddCard, configValidation);
     openModal(popupAddCard);
-})
+});
 
-// Открытие модального кона по нажатию на кнопку редактирования карточки.
+// Открытие модального окна по нажатию на кнопку редактирования карточки.
 buttonEditProfile.addEventListener('click', function () {
     clearValidation(formEditProfile, configValidation);
     nameInput.value = nameTitle.textContent;
-    jobInput.value = jobTitle.textContent;
+    aboutInput.value = jobTitle.textContent;
     openModal(popupEditProfile);
 });
 
@@ -79,9 +78,10 @@ function openPopupImage(imageSrc, imageAlt) {
     openModal(popupImageOpen);
 };
 
-// Закрытие модального окна по оверлею
+// Закрытие модального окна по оверлею.
 document.addEventListener('click', closeModalOverlay);
 
+// Запуск функции поиска всех форм на странице.
 enableValidation(configValidation);
 
 // Обновление фотографии.
@@ -91,8 +91,22 @@ formPhotoProfile.addEventListener('submit', function (evt) {
     const buttonElement = formPhotoProfile.querySelector('.popup__button');
     buttonElement.textContent = "Сохранение...";
     buttonElement.disabled = true;
-    updatePhotoCheck(newAvatarPhoto);
-    updatePhoto(newAvatarPhoto, buttonElement, closeModal, popupNewAvatar, Avatar);
+    updatePhotoCheck(newAvatarPhoto)
+        .catch((error) => {
+            console.log('Ошибка', error);
+        })
+    updatePhoto(newAvatarPhoto)
+        .then((data) => {
+            avatar.style.backgroundImage = `url(${data.avatar})`;
+        })
+        .finally(() => {
+            buttonElement.textContent = "Сохранить";
+            buttonElement.disabled = false;
+            closeModal(popupNewAvatar);
+        })
+        .catch((error) => {
+            console.log('Ошибка:', error);
+        })
 });
 
 // Редактирование профиля.
@@ -100,12 +114,25 @@ formEditProfile.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
     nameTitle.textContent = nameInput.value;
-    jobTitle.textContent = jobInput.value;
+    jobTitle.textContent = aboutInput.value;
 
     const buttonElement = formEditProfile.querySelector('.popup__button');
     buttonElement.textContent = "Сохранение..."
     buttonElement.disabled = true;
-    updateProfile(nameInput, jobInput, jobTitle, nameTitle, closeModal, popupEditProfile, buttonElement);
+
+    updateProfile(nameInput.value, aboutInput.value)
+        .then((data) => {
+            nameTitle.textContent = data.name;
+            jobTitle.textContent = data.about;
+        })
+        .finally(() => {
+            buttonElement.textContent = "Сохранить"
+            buttonElement.disabled = false;
+            closeModal(popupEditProfile);
+        })
+        .catch((error) => {
+            console.log('Ошибка', error);
+        })
 });
 
 // Добавление карточки.
@@ -113,20 +140,82 @@ formAddCard.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
     const buttonElement = formAddCard.querySelector('.popup__button');
+    const item = {
+        name: document.querySelector('.popup__input_type_card-name').value,
+        link: document.querySelector('.popup__input_type_url').value,
+    }
     buttonElement.textContent = "Сохранение...";
     buttonElement.disabled = true;
 
-    addCard(buttonElement, closeModal, formAddCard, popupAddCard, createCard, deleteCard, addLike, openPopupImage, cardList)
+    addCard(item.name, item.link)
+        .then((data) => {
+            const newCard = createCard(data,
+                 deleteCard
+                 .catch((error) => {
+                    console.log('Ошибка', error);
+                }),
+                  addLike
+                  .then((data) => {
+                    likeCount.textContent = data.likes.length;
+                    likeButton.classList.toggle('card__like-button_is-active');
+                })
+                .catch((error) => {
+                    console.log('Ошибка', error);
+                }),
+                  data.owner._id, 
+                  openPopupImage);
+            cardList.prepend(newCard);
+        })
+        .finally(() => {
+            buttonElement.textContent = "Сохранить"
+            buttonElement.disabled = false;
+            formAddCard.reset();
+            closeModal(popupAddCard);
+        })
+        .catch((error) => {
+            console.log('Ошибка', error);
+        })
 });
 
-const promises = [getUserData(nameTitle, jobTitle), getCreatesCards()];
+const promises = [getUserData(nameTitle, jobTitle)
+    .then((data) => {
+        document.querySelector('.profile__image').style.backgroundImage = `url(${data.avatar})`;
+        nameTitle.textContent = data.name;
+        jobTitle.textContent = data.about;
+        return data;
+    })
+    .catch((error) => {
+        console.log('Ошибка', error);
+    }),
+initialCards()
+    .then((data) => {
+        return data;
+    })
+    .catch(() => {
+        console.log('Ошибка', error);
+    })
+];
 
 // Отображение карточек на сайте после получения информации от сервера и токена пользователя.
 Promise.all(promises)
-    .then(([userData, getCreatesCards]) => {
-        const getUser = userData._id;
-        getCreatesCards.forEach(function (item) {
-            const newCard = createCard(item, deleteCard, addLike, getUser, openPopupImage);
+    .then(([userData, initialCards]) => {
+        const userId = userData._id;
+        initialCards.forEach(function (item) {
+            const newCard = createCard(item, 
+                deleteCard
+                .catch((error) => {
+                    console.log('Ошибка', error);
+                }),
+                addLike
+                .then((data) => {
+                    likeCount.textContent = data.likes.length;
+                    likeButton.classList.toggle('card__like-button_is-active');
+                })
+                .catch((error) => {
+                    console.log('Ошибка', error);
+                }),
+                userId, 
+                openPopupImage);
             cardList.append(newCard);
         })
-    })
+    });

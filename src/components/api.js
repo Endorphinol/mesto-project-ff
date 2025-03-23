@@ -1,12 +1,21 @@
+// Конфигурация для подставки идентификатора и токена.
 export const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-35',
     headers: {
         authorization: '08a2006d-1e8e-4054-8f6b-d1d1b6dfc2ea',
         'Content-Type': 'application/json'
     }
-}
+};
 
-// Проверка фотографии.
+// Функция для проверки обьекта ответа.
+export const handleResponse = (response) => {
+    if (response.ok) {
+        return response.json();
+    }
+    return Promise.reject(`Ошибка: ${response.status}`);
+};
+
+// Проверка фотографии для подтверждения.
 export const updatePhotoCheck = (url) => {
     return fetch(`${url.value}`, {
         method: 'HEAD',
@@ -20,17 +29,10 @@ export const updatePhotoCheck = (url) => {
                 console.log('URL не является картинкой')
             }
         })
-        .catch((error) => {
-            console.log('Ошибка', error);
-        })
 };
 
 // Обновление фотографии пользователя на сайте.
-export const updatePhoto = (newAvatarPhoto,
-    buttonElement,
-    closeModal,
-    popupNewAvatar,
-    Avatar) => {
+export const updatePhoto = (newAvatarPhoto) => {
     return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
         headers: {
@@ -41,34 +43,11 @@ export const updatePhoto = (newAvatarPhoto,
             avatar: `${newAvatarPhoto.value}`
         })
     })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.reject(`Ошибка: ${response.status}`);
-        })
-        .then((data) => {
-            Avatar.style.backgroundImage = `url(${data.avatar})`;
-        })
-        .finally(() => {
-            buttonElement.textContent = "Сохранено";
-            buttonElement.disabled = false;
-            closeModal(popupNewAvatar);
-        })
-        .catch((error) => {
-            console.log('Ошибка:', error);
-        })
+        .then(handleResponse)
 };
 
-// Редактирование имени и деятельности пользователя на сайте.
-export const updateProfile = (
-    nameInput,
-    jobInput,
-    jobTitle,
-    nameTitle,
-    closeModal,
-    popupEditProfile,
-    buttonElement) => {
+// Редактирование имени и деятельности пользователя в профиле.
+export const updateProfile = (nameData, aboutData,) => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
         headers: {
@@ -76,44 +55,15 @@ export const updateProfile = (
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: nameInput.value,
-            about: jobInput.value
+            name: nameData,
+            about: aboutData,
         })
     })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.reject(`Ошибка: ${response.status}`);
-        })
-        .then((data) => {
-            nameTitle.textContent = data.name;
-            jobTitle.textContent = data.about;
-        })
-        .finally(() => {
-            buttonElement.textContent = "Сохранено"
-            buttonElement.disabled = false;
-            closeModal(popupEditProfile);
-        })
-        .catch((error) => {
-            console.log('Ошибка', error);
-        })
+        .then(handleResponse)
 };
 
 // Добавление карточки на сайт.
-export const addCard = (buttonElement,
-    closeModal,
-    formAddCard,
-    popupAddCard,
-    createCard,
-    deleteCard,
-    addLike,
-    openPopupImage,
-    cardList) => {
-    const item = {
-        name: document.querySelector('.popup__input_type_card-name').value,
-        link: document.querySelector('.popup__input_type_url').value,
-    }
+export const addCard = (nameCard, linkCard) => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
         headers: {
@@ -121,29 +71,11 @@ export const addCard = (buttonElement,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: item.name,
-            link: item.link,
+            name: nameCard,
+            link: linkCard,
         })
     })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.reject(`Ошибка: ${response.status}`);
-        })
-        .then((data) => {
-            const newCard = createCard(data, deleteCard, addLike, data.owner._id, openPopupImage);
-            cardList.prepend(newCard);
-        })
-        .finally(() => {
-            buttonElement.textContent = "Сохранено"
-            buttonElement.disabled = false;
-            formAddCard.reset();
-            closeModal(popupAddCard);
-        })
-        .catch((error) => {
-            console.log('Ошибка', error);
-        })
+        .then(handleResponse)
 };
 
 // Загрузка информации о пользователе с сервера.
@@ -154,42 +86,48 @@ export const getUserData = (nameTitle, jobTitle) => {
             authorization: `${config.headers.authorization}`,
         }
     })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.reject(`Ошибка: ${response.status}`);
-        })
-        .then((data) => {
-            document.querySelector('.profile__image').style.backgroundImage = `url(${data.avatar})`;
-            nameTitle.textContent = data.name;
-            jobTitle.textContent = data.about;
-            return data;
-        })
-        .catch((error) => {
-            console.log('Ошибка', error);
-        })
+        .then(handleResponse)
 };
 
 // Загрузка карточек с сервера.
-export const getCreatesCards = () => {
+export const initialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'GET',
         headers: {
             authorization: `${config.headers.authorization}`,
         }
     })
+        .then(handleResponse)
+};
+
+// Удаление карточки по нажатию.
+export const deleteCard = (cardElement, idCard) => {
+    return fetch(`${config.baseUrl}/cards/${idCard}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: `${config.headers.authorization}`,
+        }
+    })
         .then((response) => {
             if (response.ok) {
-                return response.json();
+                cardElement.remove();
             }
-            return Promise.reject(`Ошибка: ${response.status}`);
+        })
+};
 
-        })
-        .then((data) => {
-            return data;
-        })
-        .catch(() => {
-            console.log('Ошибка', error);
+// Функция добавления лайка на карточку.
+export const addLike = (likeCount, likeButton, cardId) => {
+    const isLiked = likeButton.classList.contains('card__like-button_is-active');
+
+    fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+        method: isLiked ? 'DELETE' : 'PUT',
+        headers: {
+            authorization: `${config.headers.authorization}`,
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
         })
 };
