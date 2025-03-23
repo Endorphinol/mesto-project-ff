@@ -14,7 +14,7 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
         })
         .catch((error) => {
             console.log('Ошибка', error);
-        });
+        })
     );
 
     // Проверка идентификатора пользователя с остальными пользователями.
@@ -25,7 +25,7 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
             .catch((error) => {
                 console.log('Ошибка', error);
             })
-        );
+        )
     };
 
     image.addEventListener('click', function () {
