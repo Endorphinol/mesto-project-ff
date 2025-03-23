@@ -150,20 +150,10 @@ formAddCard.addEventListener('submit', function (evt) {
     addCard(item.name, item.link)
         .then((data) => {
             const newCard = createCard(data,
-                 deleteCard
-                 .catch((error) => {
-                    console.log('Ошибка', error);
-                }),
-                  addLike
-                  .then((data) => {
-                    likeCount.textContent = data.likes.length;
-                    likeButton.classList.toggle('card__like-button_is-active');
-                })
-                .catch((error) => {
-                    console.log('Ошибка', error);
-                }),
-                  data.owner._id, 
-                  openPopupImage);
+                deleteCard,
+                addLike,
+                data.owner._id,
+                openPopupImage);
             cardList.prepend(newCard);
         })
         .finally(() => {
@@ -201,20 +191,10 @@ Promise.all(promises)
     .then(([userData, initialCards]) => {
         const userId = userData._id;
         initialCards.forEach(function (item) {
-            const newCard = createCard(item, 
-                deleteCard
-                .catch((error) => {
-                    console.log('Ошибка', error);
-                }),
-                addLike
-                .then((data) => {
-                    likeCount.textContent = data.likes.length;
-                    likeButton.classList.toggle('card__like-button_is-active');
-                })
-                .catch((error) => {
-                    console.log('Ошибка', error);
-                }),
-                userId, 
+            const newCard = createCard(item,
+                deleteCard,
+                addLike,
+                userId,
                 openPopupImage);
             cardList.append(newCard);
         })
