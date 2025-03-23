@@ -79,7 +79,7 @@ export const addCard = (nameCard, linkCard) => {
 };
 
 // Загрузка информации о пользователе с сервера.
-export const getUserData = (nameTitle, jobTitle) => {
+export const getUserData = () => {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'GET',
         headers: {
@@ -90,7 +90,7 @@ export const getUserData = (nameTitle, jobTitle) => {
 };
 
 // Загрузка карточек с сервера.
-export const initialCards = () => {
+export const getInitialCards = () => {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'GET',
         headers: {
@@ -101,28 +101,23 @@ export const initialCards = () => {
 };
 
 // Удаление карточки по нажатию.
-export const deleteCard = (cardElement, idCard) => {
-    return fetch(`${config.baseUrl}/cards/${idCard}`, {
+export const deleteCard = (cardId) => {
+    return fetch(`${config.baseUrl}/cards/${cardId}`, {
         method: 'DELETE',
         headers: {
             authorization: `${config.headers.authorization}`,
         }
     })
-        .then((response) => {
-            if (response.ok) {
-                cardElement.remove();
-            }
-        })
+        .then(handleResponse)
 };
 
-// Функция добавления лайка на карточку.
-export const addLike = (cardId, likeButton) => {
-    const isLiked = likeButton.classList.contains('card__like-button_is-active');
+// Функция добавления лайка на к арточку.
+export const addLike = (cardId, isLiked) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: isLiked ? 'DELETE' : 'PUT',
         headers: {
             authorization: `${config.headers.authorization}`,
         }
     })
-    .then(handleResponse)
-};
+        .then(handleResponse)
+};  

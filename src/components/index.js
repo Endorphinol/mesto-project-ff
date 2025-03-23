@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { createCard } from './card.js';
 import { openModal, closeModal, closeModalOverlay } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { config, updatePhotoCheck, updatePhoto, updateProfile, addCard, getUserData, initialCards, deleteCard, addLike } from './api.js';
+import { config, updatePhotoCheck, updatePhoto, updateProfile, addCard, getUserData, getInitialCards, deleteCard, addLike } from './api.js';
 
 const buttonEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
@@ -167,35 +167,18 @@ formAddCard.addEventListener('submit', function (evt) {
         })
 });
 
-const promises = [getUserData(nameTitle, jobTitle)
-    .then((data) => {
-        document.querySelector('.profile__image').style.backgroundImage = `url(${data.avatar})`;
-        nameTitle.textContent = data.name;
-        jobTitle.textContent = data.about;
-        return data;
+const promises = [getUserData(), getInitialCards()];
+Promise.all(promises)
+    .then(([userData, initialCards]) => {
+        document.querySelector('.profile__image').style.backgroundImage = `url(${userData.avatar})`;
+        nameTitle.textContent = userData.name;
+        jobTitle.textContent = userData.about;
+        const userId = userData._id;
+        initialCards.forEach(function (item) {
+            const newCard = createCard(item, deleteCard, addLike, userId, openPopupImage);
+            cardList.append(newCard);
+        })
     })
     .catch((error) => {
         console.log('Ошибка', error);
-    }),
-initialCards()
-    .then((data) => {
-        return data;
-    })
-    .catch(() => {
-        console.log('Ошибка', error);
-    })
-];
-
-// Отображение карточек на сайте после получения информации от сервера и токена пользователя.
-Promise.all(promises)
-    .then(([userData, initialCards]) => {
-        const userId = userData._id;
-        initialCards.forEach(function (item) {
-            const newCard = createCard(item,
-                deleteCard,
-                addLike,
-                userId,
-                openPopupImage);
-            cardList.append(newCard);
-        })
     });

@@ -7,10 +7,11 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     const likeCount = templateCard.querySelector('.card__count');
     likeCount.textContent = card.likes ? card.likes.length : 0;
     templateCard.querySelector('.card__title').textContent = card.name;
-    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(card._id, likeButton)
+    const isLiked = likeButton.classList.contains('card__like-button_is-active');
+    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(card._id, isLiked)
         .then((data) => {
             likeCount.textContent = data.likes.length;
-            likeButton.classList.toggle('card__like-button_is-active'); 
+            likeButton.classList.toggle('card__like-button_is-active');
         })
         .catch((error) => {
             console.log('Ошибка', error);
@@ -21,17 +22,21 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     if (userId !== card.owner._id) {
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
     } else {
-        templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(templateCard, card._id)
+        templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card._id)
+            .then(() => {
+                templateCard.remove();
+            })
             .catch((error) => {
                 console.log('Ошибка', error);
             })
         )
     };
 
+    // Открытие попапа крупного изображения.
     image.addEventListener('click', function () {
         openPopupImage(card.link, card.name)
     });
-
+    // Создание мелких карточек на сайте.
     image.src = card.link;
     image.alt = card.name;
     return templateCard;
