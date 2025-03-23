@@ -26,7 +26,7 @@ export const updatePhotoCheck = (url) => {
             }
             const contentType = response.headers.get('Content-Type');
             if (!contentType.startsWith('image/')) {
-                console.log('URL не является картинкой')
+                console.log('URL не является картинкой');
             }
         })
 };
@@ -116,18 +116,13 @@ export const deleteCard = (cardElement, idCard) => {
 };
 
 // Функция добавления лайка на карточку.
-export const addLike = (likeCount, likeButton, cardId) => {
+export const addLike = (cardId, likeButton) => {
     const isLiked = likeButton.classList.contains('card__like-button_is-active');
-
-    fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+    return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
         method: isLiked ? 'DELETE' : 'PUT',
         headers: {
             authorization: `${config.headers.authorization}`,
         }
     })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-        })
+    .then(handleResponse)
 };

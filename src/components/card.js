@@ -7,10 +7,10 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     const likeCount = templateCard.querySelector('.card__count');
     likeCount.textContent = card.likes ? card.likes.length : 0;
     templateCard.querySelector('.card__title').textContent = card.name;
-    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(likeCount, likeButton, card._id)
+    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(card._id, likeButton)
         .then((data) => {
             likeCount.textContent = data.likes.length;
-            likeButton.classList.toggle('card__like-button_is-active');
+            likeButton.classList.toggle('card__like-button_is-active'); 
         })
         .catch((error) => {
             console.log('Ошибка', error);
