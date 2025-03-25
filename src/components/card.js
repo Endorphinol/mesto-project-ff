@@ -25,25 +25,27 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     if (userId !== card.owner._id) {
         templateCard.querySelector('.card__delete-button').classList.remove('card__delete-button');
     } else {
-        templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card._id)
+        templateCard.querySelector('.card__delete-button').addEventListener('click', function () {
+            openModal(popupDelete);
+        })
+        templateCard.querySelector('.popup__button').addEventListener('click', () =>  deleteCard(card._id)
             .then(() => {
-                openModal(popupDelete);
-                templateCard.querySelector('.popup__button').addEventListener('click', function () {
-                    templateCard.remove();
-                })
+                templateCard.remove();
             })
             .catch((error) => {
                 console.log('Ошибка', error);
             })
         )
-    };
+    }
 
-    // Открытие попапа крупного изображения.
     image.addEventListener('click', function () {
         openPopupImage(card.link, card.name)
-    });
+    })
+
     // Создание мелких карточек на сайте.
     image.src = card.link;
     image.alt = card.name;
     return templateCard;
 };
+
+
