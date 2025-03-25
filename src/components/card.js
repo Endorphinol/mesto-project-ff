@@ -1,3 +1,5 @@
+import { openModal } from "./modal";
+
 // Функция создания карточки.
 export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     const templateList = document.querySelector('#card-template').content;
@@ -8,6 +10,7 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     likeCount.textContent = card.likes ? card.likes.length : 0;
     templateCard.querySelector('.card__title').textContent = card.name;
     const isLiked = likeButton.classList.contains('card__like-button_is-active');
+    const popupDelete = templateCard.querySelector('.popup_type_trash');
     templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(card._id, isLiked)
         .then((data) => {
             likeCount.textContent = data.likes.length;
@@ -24,7 +27,10 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     } else {
         templateCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(card._id)
             .then(() => {
-                templateCard.remove();
+                openModal(popupDelete);
+                templateCard.querySelector('.popup__button').addEventListener('click', function () {
+                    templateCard.remove();
+                })
             })
             .catch((error) => {
                 console.log('Ошибка', error);
