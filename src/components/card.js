@@ -9,16 +9,24 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
     const likeCount = templateCard.querySelector('.card__count');
     likeCount.textContent = card.likes ? card.likes.length : 0;
     templateCard.querySelector('.card__title').textContent = card.name;
-    const isLiked = likeButton.classList.contains('card__like-button_is-active');
+    const isLiked = card.likes.some(like => like._id === userId);
+    if (isLiked) {
+        likeButton.classList.add('card__like-button_is-active');
+    }
+    
     const popupDelete = templateCard.querySelector('.popup_type_trash');
-    templateCard.querySelector('.card__like-button').addEventListener('click', () => addLike(card._id, isLiked)
-        .then((data) => {
-            likeCount.textContent = data.likes.length;
-            likeButton.classList.toggle('card__like-button_is-active');
-        })
-        .catch((error) => {
-            console.log('Ошибка', error);
-        })
+    templateCard.querySelector('.card__like-button').addEventListener('click', () => {
+        const currentLike = likeButton.classList.contains('card__like-button_is-active');
+        addLike(card._id, currentLike)
+            .then((data) => {
+                console.log(data)
+                likeButton.classList.toggle('card__like-button_is-active');
+                likeCount.textContent = data.likes.length;
+            })
+            .catch((error) => {
+                console.log('Ошибка', error);
+            })
+    }
     );
 
     // Проверка идентификатора пользователя с остальными пользователями.
@@ -28,7 +36,7 @@ export function createCard(card, deleteCard, addLike, userId, openPopupImage) {
         templateCard.querySelector('.card__delete-button').addEventListener('click', function () {
             openModal(popupDelete);
         })
-        templateCard.querySelector('.popup__button').addEventListener('click', () =>  deleteCard(card._id)
+        templateCard.querySelector('.popup__button').addEventListener('click', () => deleteCard(card._id)
             .then(() => {
                 templateCard.remove();
             })

@@ -112,9 +112,9 @@ export const deleteCard = (cardId) => {
 };
 
 // Функция добавления лайка на к арточку.
-export const addLike = (cardId, isLiked) => {
+export const addLike = (cardId, currentLike) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
-        method: isLiked ? 'DELETE' : 'PUT',
+        method: currentLike ? 'DELETE' : 'PUT',
         headers: {
             authorization: `${config.headers.authorization}`,
         }
